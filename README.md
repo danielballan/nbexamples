@@ -34,7 +34,20 @@ python setup.py install
 ```
 
 In addition to installing the `nbexamples` packages, the installation adds a
-server extension to the jupyter notebook config file.
+server extension to the jupyter notebook config file:
+
+```python
+c.NotebookApp.server_extensions.append('nbexamples.handlers')
+```
+
+### Configuration
+
+Set the location of the example notebooks to be distributed by adding this
+line to the jupyter notebook config file:
+
+```python
+c.Examples.example_dir = '/etc/examples'
+```
 
 ### Related Work
 
