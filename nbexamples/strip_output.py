@@ -14,7 +14,6 @@ class StripOutput(Preprocessor):
         """
         Clear prompt number and output (if any) from cell.
         """
-        print("FUCKER!")
         if 'outputs' in cell:
             cell['outputs'] = []
         if 'prompt_number' in cell:
