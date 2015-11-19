@@ -9,7 +9,7 @@ define([
 ], function(Jupyter, $, utils, dialog) {
     "use strict";
 
-    var AssignmentList = function (released_selector, fetched_selector, submitted_selector, options) {
+    var Examples = function (released_selector, fetched_selector, submitted_selector, options) {
         this.released_selector = released_selector;
         this.fetched_selector = fetched_selector;
         this.submitted_selector = submitted_selector;
@@ -25,15 +25,15 @@ define([
     };
 
 
-    AssignmentList.prototype.bind_events = function () {
+    Examples.prototype.bind_events = function () {
         var that = this;
-        $('#refresh_assignments_list').click(function () {
+        $('#refresh_examples_list').click(function () {
             that.load_list();
         });
     };
 
 
-    AssignmentList.prototype.load_list = function () {
+    Examples.prototype.load_list = function () {
         var settings = {
             processData : false,
             cache : false,
@@ -47,7 +47,7 @@ define([
     };
 
 
-    AssignmentList.prototype.clear_list = function () {
+    Examples.prototype.clear_list = function () {
         // remove list items
         this.released_element.children('.list_item').remove();
         this.fetched_element.children('.list_item').remove();
@@ -59,14 +59,14 @@ define([
         this.submitted_element.children('.list_placeholder').show();
     };
 
-    AssignmentList.prototype.load_list_success = function (data, status, xhr) {
+    Examples.prototype.load_list_success = function (data, status, xhr) {
         this.clear_list();
         var len = data.length;
         for (var i=0; i<len; i++) {
             var element = $('<div/>');
-            var item = new Assignment(element, data[i], $.proxy(this.load_list_success, this), this.options);
+            var item = new Example(element, data[i], $.proxy(this.load_list_success, this), this.options);
+            this.released_element.append(element);
             if (data[i]['status'] === 'released') {
-                this.released_element.append(element);
                 this.released_element.children('.list_placeholder').hide();
             } else if (data[i]['status'] === 'fetched') {
                 this.fetched_element.append(element);
@@ -78,7 +78,7 @@ define([
         }
 
         // Add collapse arrows.
-        $('.assignment-notebooks-link').each(function(index, el) {
+        $('.example-notebooks-link').each(function(index, el) {
             var $link = $(el);
             var $icon = $('<i />')
                 .addClass('fa fa-caret-down')
@@ -112,7 +112,7 @@ define([
     };
 
 
-    var Assignment = function (element, data, on_refresh, options) {
+    var Example = function (element, data, on_refresh, options) {
         this.element = $(element);
         this.data = data;
         this.on_refresh = on_refresh;
@@ -122,15 +122,15 @@ define([
         this.make_row();
     };
 
-    Assignment.prototype.style = function () {
+    Example.prototype.style = function () {
         this.element.addClass('list_item').addClass("row");
     };
 
-    Assignment.prototype.escape_id = function () {
-        // construct the id from the course id and the assignment id, and also
+    Example.prototype.escape_id = function () {
+        // construct the id from the course id and the example id, and also
         // prepend the id with "nbgrader" (this also ensures that the first
         // character is always a letter, as required by HTML 4)
-        var id = "nbgrader-" + this.data.course_id + "-" + this.data.assignment_id;
+        var id = "nbgrader-" + this.data.course_id + "-" + this.data.example_id;
 
         // replace spaces with '_'
         id = id.replace(/ /g, "_");
@@ -141,7 +141,7 @@ define([
         return id;
     };
 
-    Assignment.prototype.make_row = function () {
+    Example.prototype.make_row = function () {
         var row = $('<div/>').addClass('col-md-12');
         row.append(this.make_link());
         row.append($('<span/>').addClass('item_course col-sm-2').text(this.data.course_id));
@@ -156,7 +156,7 @@ define([
             var id = this.escape_id();
             var children = $('<div/>')
                 .attr("id", id)
-                .addClass("panel-collapse collapse list_container assignment-notebooks")
+                .addClass("panel-collapse collapse list_container example-notebooks")
                 .attr("role", "tabpanel");
 
             var element, child;
@@ -164,7 +164,7 @@ define([
             for (var i=0; i<this.data.notebooks.length; i++) {
                 element = $('<div/>');
                 this.data.notebooks[i].course_id = this.data.course_id;
-                this.data.notebooks[i].assignment_id = this.data.assignment_id;
+                this.data.notebooks[i].example_id = this.data.example_id;
                 child = new Notebook(element, this.data.notebooks[i], this.options);
                 children.append(element);
             }
@@ -173,17 +173,17 @@ define([
         }
     };
 
-    Assignment.prototype.make_link = function () {
+    Example.prototype.make_link = function () {
         var container = $('<span/>').addClass('item_name col-sm-6');
         var link;
 
         if (this.data.status === 'fetched') {
             var id = this.escape_id();
             link = $('<a/>')
-                .addClass("collapsed assignment-notebooks-link")
+                .addClass("collapsed example-notebooks-link")
                 .attr("role", "button")
                 .attr("data-toggle", "collapse")
-                .attr("data-parent", "#fetched_assignments_list")
+                .attr("data-parent", "#fetched_examples_list")
                 .attr("href", "#" + id)
                 .attr("aria-expanded", "false")
                 .attr("aria-controls", id)
@@ -191,12 +191,12 @@ define([
             link = $('<span/>');
         }
 
-        link.text(this.data.assignment_id);
+        link.text(this.data.example_id);
         container.append(link);
         return container;
     };
 
-    Assignment.prototype.make_button = function () {
+    Example.prototype.make_button = function () {
         var that = this;
         var container = $('<span/>').addClass('item_status col-sm-4');
         var button = $('<button/>').addClass("btn btn-primary btn-xs");
@@ -209,13 +209,13 @@ define([
                     cache : false,
                     data : {
                         course_id: that.data.course_id,
-                        assignment_id: that.data.assignment_id
+                        example_id: that.data.example_id
                     },
                     type : "POST",
                     dataType : "json",
                     success : $.proxy(that.on_refresh, that),
                     error : function (xhr, status, error) {
-                        container.empty().text("Error fetching assignment.");
+                        container.empty().text("Error fetching example.");
                         utils.log_ajax_error(xhr, status, error);
                     }
                 };
@@ -223,7 +223,7 @@ define([
                 button.attr('disabled', 'disabled');
                 var url = utils.url_join_encode(
                     that.base_url,
-                    'assignments',
+                    'examples',
                     'fetch'
                 );
                 $.ajax(url, settings);
@@ -236,13 +236,13 @@ define([
                     cache : false,
                     data : {
                         course_id: that.data.course_id,
-                        assignment_id: that.data.assignment_id
+                        example_id: that.data.example_id
                     },
                     type : "POST",
                     dataType : "json",
                     success : $.proxy(that.on_refresh, that),
                     error : function (xhr, status, error) {
-                        container.empty().text("Error submitting assignment.");
+                        container.empty().text("Error submitting example.");
                         utils.log_ajax_error(xhr, status, error);
                     }
                 };
@@ -250,7 +250,7 @@ define([
                 button.attr('disabled', 'disabled');
                 var url = utils.url_join_encode(
                     that.base_url,
-                    'assignments',
+                    'examples',
                     'submit'
                 );
                 $.ajax(url, settings);
@@ -275,7 +275,7 @@ define([
 
     Notebook.prototype.make_row = function () {
         var container = $('<div/>').addClass('col-md-12');
-        var url = utils.url_join_encode(this.base_url, 'tree', this.data.assignment_id, this.data.notebook_id) + ".ipynb";
+        var url = utils.url_join_encode(this.base_url, 'tree', this.data.example_id, this.data.notebook_id) + ".ipynb";
         var link = $('<span/>').addClass('item_name col-sm-6').append(
             $('<a/>')
                 .attr("href", url)
@@ -299,7 +299,7 @@ define([
                 cache : false,
                 data : {
                     course_id: that.data.course_id,
-                    assignment_id: that.data.assignment_id,
+                    example_id: that.data.example_id,
                     notebook_id: that.data.notebook_id
                 },
                 type : "POST",
@@ -310,7 +310,7 @@ define([
                     that.validate(data, button);
                 },
                 error : function (xhr, status, error) {
-                    container.empty().text("Error validating assignment.");
+                    container.empty().text("Error validating example.");
                     utils.log_ajax_error(xhr, status, error);
                 }
             };
@@ -318,7 +318,7 @@ define([
             button.attr('disabled', 'disabled');
             var url = utils.url_join_encode(
                 that.base_url,
-                'assignments',
+                'examples',
                 'validate'
             );
             $.ajax(url, settings);
@@ -385,8 +385,8 @@ define([
     };
 
     return {
-        'AssignmentList': AssignmentList,
-        'Assignment': Assignment,
+        'Examples': Examples,
+        'Example': Example,
         'Notebook': Notebook
     };
 });

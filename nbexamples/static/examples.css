@@ -1,9 +1,9 @@
-#assignments .panel-group .panel {
+#examples .panel-group .panel {
     margin-top: 3px;
     margin-bottom: 1em;
 }
 
-#assignments .panel-group .panel .panel-heading {
+#examples .panel-group .panel .panel-heading {
     background-color: #eee;
     padding-top: 4px;
     padding-bottom: 4px;
@@ -12,42 +12,42 @@
     line-height: 22px;
 }
 
-#assignments .panel-group .panel .panel-heading a:focus, a:hover {
+#examples .panel-group .panel .panel-heading a:focus, a:hover {
     text-decoration: none;
 }
 
-#assignments .panel-group .panel .panel-body {
+#examples .panel-group .panel .panel-body {
     padding: 0;
 }
 
-#assignments .panel-group .panel .panel-body .list_container {
+#examples .panel-group .panel .panel-body .list_container {
     margin-top: 0px;
     margin-bottom: 0px;
     border: 0px;
     border-radius: 0px;
 }
 
-#assignments .panel-group .panel .panel-body .list_container .list_item {
+#examples .panel-group .panel .panel-body .list_container .list_item {
     border-bottom: 1px solid #ddd;
 }
 
-#assignments .panel-group .panel .panel-body .list_container .list_item:last-child {
+#examples .panel-group .panel .panel-body .list_container .list_item:last-child {
     border-bottom: 0px;
 }
 
-#assignments .assignment-notebooks .list_item {
+#examples .example-notebooks .list_item {
     background-color: inherit !important;
 }
 
-#assignments .assignment-notebooks .list_item:hover {
+#examples .example-notebooks .list_item:hover {
     background-color: #ddd !important;
 }
 
-#assignments .assignment-notebooks .list_item:first-child:hover {
+#examples .example-notebooks .list_item:first-child:hover {
     background-color: inherit !important;
 }
 
-#assignments .list_item {
+#examples .list_item {
     padding-top: 4px;
     padding-bottom: 4px;
     padding-left: 7px;
@@ -55,18 +55,18 @@
     line-height: 22px;
 }
 
-#assignments .list_item > div {
+#examples .list_item > div {
     padding-top: 0;
     padding-bottom: 0;
     padding-left: 0;
     padding-right: 0;
 }
 
-#assignments .item_status {
+#examples .item_status {
     text-align: right;
 }
 
-#assignments .item_status .btn {
+#examples .item_status .btn {
     min-width: 13ex;
 }
 

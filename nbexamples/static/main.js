@@ -3,51 +3,51 @@ define(function(require) {
     var Jupyter = require('base/js/namespace');
     var Examples = require('./examples');
 
-    var assignment_html = $([
-        '<div id="assignments" class="tab-pane">',
-        '  <div id="assignments_toolbar" class="row list_toolbar">',
+    var examples_html = $([
+        '<div id="examples" class="tab-pane">',
+        '  <div id="examples_toolbar" class="row list_toolbar">',
         '    <div class="col-sm-8 no-padding">',
-        '      <span id="assignments_list_info" class="toolbar_info">A shared collection of notebooks. To contribute a new notebook</span>',
+        '      <span id="examples_list_info" class="toolbar_info">A shared collection of notebooks. To contribute a new notebook</span>',
         '    </div>',
         '    <div class="col-sm-4 no-padding tree-buttons">',
-        '      <span id="assignments_buttons" class="pull-right toolbar_buttons">',
-        '      <button id="refresh_assignments_list" title="Refresh assignments list" class="btn btn-default btn-xs"><i class="fa fa-refresh"></i></button>',
+        '      <span id="examples_buttons" class="pull-right toolbar_buttons">',
+        '      <button id="refresh_examples_list" title="Refresh examples list" class="btn btn-default btn-xs"><i class="fa fa-refresh"></i></button>',
         '      </span>',
         '    </div>',
         '  </div>',
         '  <div class="panel-group">',
         '    <div class="panel panel-default">',
         '      <div class="panel-heading">',
-        '        Released assignments',
+        '        Released examples',
         '      </div>',
         '      <div class="panel-body">',
-        '        <div id="released_assignments_list" class="list_container">',
-        '          <div id="released_assignments_list_placeholder" class="row list_placeholder">',
-        '            <div> There are no assignments to fetch. </div>',
+        '        <div id="released_examples_list" class="list_container">',
+        '          <div id="released_examples_list_placeholder" class="row list_placeholder">',
+        '            <div> There are no examples to fetch. </div>',
         '          </div>',
         '        </div>',
         '      </div>',
         '    </div>',
         '    <div class="panel panel-default">',
         '      <div class="panel-heading">',
-        '        Downloaded assignments',
+        '        Downloaded examples',
         '      </div>',
         '      <div class="panel-body">',
-        '        <div id="fetched_assignments_list" class="list_container" role="tablist" aria-multiselectable="true">',
-        '          <div id="fetched_assignments_list_placeholder" class="row list_placeholder">',
-        '            <div> There are no downloaded assignments. </div>',
+        '        <div id="fetched_examples_list" class="list_container" role="tablist" aria-multiselectable="true">',
+        '          <div id="fetched_examples_list_placeholder" class="row list_placeholder">',
+        '            <div> There are no downloaded examples. </div>',
         '          </div>',
         '        </div>',
         '      </div>',
         '    </div>',
         '    <div class="panel panel-default">',
         '      <div class="panel-heading">',
-        '        Submitted assignments',
+        '        Submitted examples',
         '      </div>',
         '      <div class="panel-body">',
-        '        <div id="submitted_assignments_list" class="list_container">',
-        '          <div id="submitted_assignments_list_placeholder" class="row list_placeholder">',
-        '            <div> There are no submitted assignments. </div>',
+        '        <div id="submitted_examples_list" class="list_container">',
+        '          <div id="submitted_examples_list_placeholder" class="row list_placeholder">',
+        '            <div> There are no submitted examples. </div>',
         '          </div>',
         '        </div>',
         '      </div>',
@@ -63,31 +63,31 @@ define(function(require) {
             $('<link>')
             .attr('rel', 'stylesheet')
             .attr('type', 'text/css')
-            .attr('href', base_url + 'nbextensions/nbexamples/assignment_list.css')
+            .attr('href', base_url + 'nbextensions/nbexamples/examples.css')
         );
-        $(".tab-content").append(assignment_html);
+        $(".tab-content").append(examples_html);
         $("#tabs").append(
             $('<li>')
             .append(
                 $('<a>')
-                .attr('href', '#assignments')
+                .attr('href', '#examples')
                 .attr('data-toggle', 'tab')
                 .text('Examples')
                 .click(function (e) {
-                    window.history.pushState(null, null, '#assignments');
+                    window.history.pushState(null, null, '#examples');
                 })
             )
         );
-        // var assignment_list = new AssignmentList.AssignmentList(
-        //    '#released_assignments_list',
-        //    '#fetched_assignments_list',
-        //    '#submitted_assignments_list',
-        //    {
-        //        base_url: Jupyter.notebook_list.base_url,
-        //        notebook_path: Jupyter.notebook_list.notebook_path,
-        //    }
-        //);
-        //assignment_list.load_list();
+        var examples = new Examples.Examples(
+            '#released_examples_list',
+            '#fetched_examples_list',
+            '#submitted_examples_list',
+            {
+                base_url: Jupyter.notebook_list.base_url,
+                notebook_path: Jupyter.notebook_list.notebook_path,
+            }
+        );
+        examples.load_list();
     }
     return {
         load_ipython_extension: load
