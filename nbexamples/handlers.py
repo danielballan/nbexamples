@@ -1,6 +1,7 @@
 """Tornado handlers for nbexamples web service."""
 
 import os
+import sys
 import subprocess as sp
 import json
 import glob
@@ -10,6 +11,7 @@ from tornado import web
 import nbformat
 from notebook.utils import url_path_join as ujoin
 from notebook.base.handlers import IPythonHandler
+from notebook.nbextensions import install_nbextension
 from traitlets import Unicode
 from traitlets.config import LoggingConfigurable
 
@@ -100,9 +102,20 @@ default_handlers = [
 
 def load_jupyter_server_extension(nbapp):
     """Load the nbserver"""
+    windows = sys.platform.startswith('win')
     webapp = nbapp.web_app
     webapp.settings['example_manager'] = Examples(parent=nbapp)
     base_url = webapp.settings['base_url']
+
+    install_nbextension(static, destination='nbexamples', symlink=not windows,
+                        user=True)
+    cfgm = nbapp.config_manager
+    cfgm.update('tree', {
+        'load_extensions': {
+            'nbexamples/main': True,
+        }
+    })
+
     ExampleActionHandler.base_url = base_url  # used to redirect after fetch
     webapp.add_handlers(".*$", [
         (ujoin(base_url, pat), handler)
