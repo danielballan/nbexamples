@@ -1,4 +1,4 @@
-"""Tornado handlers for nbexamples example list web service."""
+"""Tornado handlers for nbexamples web service."""
 
 import os
 import subprocess as sp
@@ -15,7 +15,7 @@ from traitlets.config import LoggingConfigurable
 
 static = os.path.join(os.path.dirname(__file__), 'static')
 
-class ExampleList(LoggingConfigurable):
+class Examples(LoggingConfigurable):
 
     example_dir = Unicode('', config=True, help='Directory where the nbexample commands should be run, relative to NotebookApp.notebook_dir')
 
@@ -62,10 +62,10 @@ class BaseExampleHandler(IPythonHandler):
 
     @property
     def manager(self):
-        return self.settings['example_list_manager']
+        return self.settings['example_manager']
 
 
-class ExampleListHandler(BaseExampleHandler):
+class ExamplesHandler(BaseExampleHandler):
 
     @web.authenticated
     def get(self):
@@ -93,7 +93,7 @@ class ExampleActionHandler(BaseExampleHandler):
 _example_action_regex = r"(?P<action>fetch|preview)"
 
 default_handlers = [
-    (r"/examples", ExampleListHandler),
+    (r"/examples", ExamplesHandler),
     (r"/examples/%s" % _example_action_regex, ExampleActionHandler),
 ]
 
@@ -101,7 +101,7 @@ default_handlers = [
 def load_jupyter_server_extension(nbapp):
     """Load the nbserver"""
     webapp = nbapp.web_app
-    webapp.settings['example_list_manager'] = ExampleList(parent=nbapp)
+    webapp.settings['example_manager'] = Examples(parent=nbapp)
     base_url = webapp.settings['base_url']
     ExampleActionHandler.base_url = base_url  # used to redirect after fetch
     webapp.add_handlers(".*$", [
