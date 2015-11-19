@@ -3,6 +3,9 @@
 This is a Jupyter extension that shows a list of example notebooks that users
 can easily preview and copy for their own use.
 
+The targeted application is a JupyterHub deployment, where it is useful to
+distribute a collection of curated examples or templates.
+
 * A new "examples" page lists notebooks from some configured directory, showing
   a title and description gleaned from notebook metadata. For each notebook
   there are two buttons, "preview" and "use".
