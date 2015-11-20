@@ -9,13 +9,11 @@ define([
 ], function(Jupyter, $, utils, dialog) {
     "use strict";
 
-    var Examples = function (reviewed_selector, fetched_selector, unreviewed_selector, options) {
+    var Examples = function (reviewed_selector, unreviewed_selector, options) {
         this.reviewed_selector = reviewed_selector;
-        this.fetched_selector = fetched_selector;
         this.unreviewed_selector = unreviewed_selector;
 
         this.reviewed_element = $(reviewed_selector);
-        this.fetched_element = $(fetched_selector);
         this.unreviewed_element = $(unreviewed_selector);
         this.bind_events();
 
@@ -50,12 +48,10 @@ define([
     Examples.prototype.clear_list = function () {
         // remove list items
         this.reviewed_element.children('.list_item').remove();
-        this.fetched_element.children('.list_item').remove();
         this.unreviewed_element.children('.list_item').remove();
 
         // show placeholders
         this.reviewed_element.children('.list_placeholder').show();
-        this.fetched_element.children('.list_placeholder').show();
         this.unreviewed_element.children('.list_placeholder').show();
     };
 
