@@ -145,7 +145,11 @@ define([
         var row = $('<div/>').addClass('col-md-12');
         row.append(this.make_link());
         row.append($('<span/>').addClass('item_course col-sm-4').text(this.data.metadata.title));
-        row.append($('<a/>').attr("href", "examples/preview?example_id=" + this.data.filepath).addClass("btn btn-primary btn-xs").text('Preview'));
+        row.append($('<a/>')
+            .attr("href", "examples/preview?example_id=" + this.data.filepath)
+            .addClass("btn btn-primary btn-xs")
+            .attr("target", "_blank")
+            .text('Preview'));
         row.append(this.make_modal(this.data.filepath));
         var modal_launcher = $('<button/>')
             .addClass("btn btn-primary btn-xs")
@@ -232,7 +236,7 @@ define([
         modal_title = $('<h4/>')
             .addClass("modal-title")
             .attr("id", "myModalLabel-" + this.hash(example_id))
-            .text("Modal title")
+            .text("Fetch a fresh copy to your home directory")
         form = $('<form/>')
             .attr("action", "examples/fetch")
             .attr("method", "get")
