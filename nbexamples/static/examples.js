@@ -9,14 +9,14 @@ define([
 ], function(Jupyter, $, utils, dialog) {
     "use strict";
 
-    var Examples = function (released_selector, fetched_selector, submitted_selector, options) {
-        this.released_selector = released_selector;
+    var Examples = function (reviewed_selector, fetched_selector, unreviewed_selector, options) {
+        this.reviewed_selector = reviewed_selector;
         this.fetched_selector = fetched_selector;
-        this.submitted_selector = submitted_selector;
+        this.unreviewed_selector = unreviewed_selector;
 
-        this.released_element = $(released_selector);
+        this.reviewed_element = $(reviewed_selector);
         this.fetched_element = $(fetched_selector);
-        this.submitted_element = $(submitted_selector);
+        this.unreviewed_element = $(unreviewed_selector);
         this.bind_events();
 
         options = options || {};
@@ -49,14 +49,14 @@ define([
 
     Examples.prototype.clear_list = function () {
         // remove list items
-        this.released_element.children('.list_item').remove();
+        this.reviewed_element.children('.list_item').remove();
         this.fetched_element.children('.list_item').remove();
-        this.submitted_element.children('.list_item').remove();
+        this.unreviewed_element.children('.list_item').remove();
 
         // show placeholders
-        this.released_element.children('.list_placeholder').show();
+        this.reviewed_element.children('.list_placeholder').show();
         this.fetched_element.children('.list_placeholder').show();
-        this.submitted_element.children('.list_placeholder').show();
+        this.unreviewed_element.children('.list_placeholder').show();
     };
 
     Examples.prototype.load_list_success = function (data, status, xhr) {
@@ -65,15 +65,15 @@ define([
         for (var i=0; i<len; i++) {
             var element = $('<div/>');
             var item = new Example(element, data[i], $.proxy(this.load_list_success, this), this.options);
-            this.released_element.append(element);
-            if (data[i]['status'] === 'released') {
-                this.released_element.children('.list_placeholder').hide();
+            this.reviewed_element.append(element);
+            if (data[i]['status'] === 'reviewed') {
+                this.reviewed_element.children('.list_placeholder').hide();
             } else if (data[i]['status'] === 'fetched') {
                 this.fetched_element.append(element);
                 this.fetched_element.children('.list_placeholder').hide();
-            } else if (data[i]['status'] === 'submitted') {
-                this.submitted_element.append(element);
-                this.submitted_element.children('.list_placeholder').hide();
+            } else if (data[i]['status'] === 'unreviewed') {
+                this.unreviewed_element.append(element);
+                this.unreviewed_element.children('.list_placeholder').hide();
             }
         }
 
@@ -144,8 +144,9 @@ define([
     Example.prototype.make_row = function () {
         var row = $('<div/>').addClass('col-md-12');
         row.append(this.make_link());
-        row.append($('<span/>').addClass('item_course col-sm-2').text(this.data.course_id));
-        if (this.data.status === 'submitted') {
+        row.append($('<span/>').addClass('item_course col-sm-2').text(this.data.metadata.title));
+        row.append($('<a/>').attr("href", "examples/preview?example_id=" + this.data.filepath).addClass("btn btn-primary btn-xs").text('Preview'));
+        if (this.data.status === 'unreviewed') {
             row.append($('<span/>').addClass('item_status col-sm-4').text(this.data.timestamp));
         } else {
             row.append(this.make_button());
@@ -202,7 +203,7 @@ define([
         var button = $('<button/>').addClass("btn btn-primary btn-xs");
         container.append(button);
 
-        if (this.data.status == 'released') {
+        if (this.data.status == 'reviewed') {
             button.text("Fetch");
             button.click(function (e) {
                 var settings = {
