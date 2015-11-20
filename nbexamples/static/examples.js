@@ -137,16 +137,22 @@ define([
         return id;
     };
 
+    Example.prototype.hash = function(s){
+        return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+    }
+
     Example.prototype.make_row = function () {
         var row = $('<div/>').addClass('col-md-12');
         row.append(this.make_link());
-        row.append($('<span/>').addClass('item_course col-sm-2').text(this.data.metadata.title));
+        row.append($('<span/>').addClass('item_course col-sm-4').text(this.data.metadata.title));
         row.append($('<a/>').attr("href", "examples/preview?example_id=" + this.data.filepath).addClass("btn btn-primary btn-xs").text('Preview'));
-        if (this.data.status === 'unreviewed') {
-            row.append($('<span/>').addClass('item_status col-sm-4').text(this.data.timestamp));
-        } else {
-            row.append(this.make_button());
-        }
+        row.append(this.make_modal(this.data.filepath));
+        var modal_launcher = $('<button/>')
+            .addClass("btn btn-primary btn-xs")
+            .attr("data-toggle", "modal")
+            .attr("data-target", "#modal-" + this.hash(this.data.filepath))
+            .text('Use');
+        row.append(modal_launcher);
         this.element.empty().append(row);
 
         if (this.data.status === 'fetched') {
@@ -192,6 +198,92 @@ define([
         container.append(link);
         return container;
     };
+
+    Example.prototype.make_modal = function(example_id) {
+        var that = this;
+        var modal_dialog;
+        var modal_content;
+        var modal_header;
+        var modal_title;
+        var form;
+        var modal_body;
+        var modal_footer;
+        var dest_label;
+        var dest_form_group;
+        var dest_input;
+        var hidden_input;
+        var submit_button;
+        var cancel_button;
+        var dumb = $('<div/>');
+        var container = $('<div/>')
+            .addClass("modal")
+            .addClass("fade")
+            .attr("id", "modal-" + this.hash(example_id))
+            .attr("tabindex", "-1")
+            .attr("role", "dialog")
+            .attr("aria-labelledby", "myModalLabel-" + this.hash(example_id));
+        modal_dialog = $('<div/>')
+            .addClass("modal-dialog")
+            .attr("role", "document")
+        modal_content = $('<div/>')
+            .addClass("modal-content")
+        modal_header = $('<div/>')
+            .addClass("modal-header")
+        modal_title = $('<h4/>')
+            .addClass("modal-title")
+            .attr("id", "myModalLabel-" + this.hash(example_id))
+            .text("Modal title")
+        form = $('<form/>')
+            .attr("action", "examples/fetch")
+            .attr("method", "get")
+            .attr("target", "_blank")
+        modal_body = $('<div/>')
+            .addClass("modal-body")
+        cancel_button = $('<button/>')
+            .addClass("btn")
+            .addClass("btn-default")
+            .attr("type", "button")
+            .attr("data-dismiss", "modal")
+            .text("Cancel")
+        submit_button = $('<input/>')
+            .addClass("btn")
+            .addClass("btn-primary")
+            .attr("type", "submit")
+            .text("Fetch a Copy")
+        modal_footer = $('<div/>')
+            .addClass("modal-footer")
+        dest_form_group = $('<div/>')
+            .addClass("form-group")
+        dest_label = $('<label/>')
+            .addClass("control-label")
+            .attr("for", "dest-" + this.hash(example_id))
+            .text("Save Copy As")
+        dest_input = $('<input/>')
+            .attr("type", "text")
+            .attr("name", "dest")
+            .attr("id", "dest-" + this.hash(example_id))
+        hidden_input = $('<input/>')
+            .attr("type", "hidden")
+            .attr("name", "example_id")
+            .attr("value", example_id)
+        modal_body.append(dest_label);
+        modal_body.append(dest_input);
+        modal_body.append(hidden_input);
+        modal_footer.append(cancel_button);
+        modal_footer.append(submit_button);
+        form.append(modal_body);
+        form.append(modal_footer);
+        modal_header.append(modal_title);
+        modal_content.append(modal_header);
+        modal_content.append(form);
+        modal_content.append(modal_header);
+        modal_content.append(form);  // form contains body and footer
+        modal_dialog.append(modal_content);
+        container.append(modal_dialog);
+
+        return container;
+    };
+
 
     Example.prototype.make_button = function () {
         var that = this;
