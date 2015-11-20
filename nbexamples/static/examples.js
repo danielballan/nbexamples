@@ -248,7 +248,7 @@ define([
             .addClass("btn-default")
             .attr("type", "button")
             .attr("data-dismiss", "modal")
-            .text("Cancel")
+            .text("Done")
         submit_button = $('<input/>')
             .addClass("btn")
             .addClass("btn-primary")
