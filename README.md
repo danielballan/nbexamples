@@ -4,20 +4,30 @@ This is a Jupyter extension that shows a list of example notebooks that users
 can easily preview and copy for their own use.
 
 The targeted application is a JupyterHub deployment, where it is useful to
-distribute a collection of curated examples or templates.
+distribute a collection of curated examples or templates and make it possible
+for hub uses to quickly share examples.
 
-* A new "examples" page lists notebooks from some configured directory, showing
-  a title and description gleaned from notebook metadata. For each notebook
-  there are two buttons, "preview" and "use".
-* Examples are sorted into "reviewed," curated examples and "unreviewed"
-  examples, a list to which anyone user can submit a notebookto share it
-  immediately with other users.
-* Clicking "preview" shows a static HTML version of the notebook, optionally
-  including some example output.
-* Clicking "use" opens a dialog box to prompt user for a filename or filepath
-  (relative to their home dir).
-* On the notebook toolbar, a new "share as example" button submits the notebook
-  to the list of "unreviewed" examples.
+A new "examples" page lists notebooks from some configured directory, showing
+a title and description gleaned from notebook metadata. For each notebook
+there are two buttons, "preview" and "use".
+
+Examples are sorted into "reviewed," curated examples and "unreviewed"
+examples.
+
+![Adds an Examples Tab](docs/examples-tab.png)
+
+Clicking "preview" shows a static HTML version of the notebook, optionally
+including some example output.
+
+Clicking "use" opens a dialog box to prompt user for a filename or filepath
+(relative to their home dir).
+
+[!Fetch](docs/fetch-dialog.png)
+
+On the notebook toolbar, a new "share as example" button (the "paper airplane"
+icon at right) submits the notebook to the list of "unreviewed" examples.
+
+[!Share as Example button](docs/share-button.png)
 
 ### URL scheme
 
