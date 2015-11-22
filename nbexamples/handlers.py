@@ -35,6 +35,8 @@ class Examples(LoggingConfigurable):
     def fetch_example(self, example_id, dest):
         abs_source = os.path.join(self.example_dir, example_id)
         abs_dest = os.path.join(os.path.expanduser('~'), dest)
+        if not abs_dest.endswith('.ipynb'):
+            abs_dest += '.ipynb'
         # Make a copy of the example notebook, stripping output.
         p = sp.Popen(['jupyter', 'nbconvert', abs_source,
                       '--Exporter.preprocessors=["nbexamples.strip_output.StripOutput"]',
@@ -84,6 +86,9 @@ class ExampleActionHandler(BaseExampleHandler):
         elif action == 'fetch':
             dest = self.get_argument('dest')
             self.manager.fetch_example(example_id, dest)
+            # nbconvert appends '.ipynb' if it isn't present
+            if not dest.endswith('.ipynb'):
+                dest += '.ipynb'
             self.redirect(ujoin(self.base_url, 'notebooks', dest))
 
 
