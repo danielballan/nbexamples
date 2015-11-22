@@ -32,6 +32,7 @@ icon at right) submits the notebook to the list of "unreviewed" examples.
 ### URL scheme
 
 * `/tree#examples` is the index page
+* `/examples` returns JSON that populates the index page
 * `/examples/preview?example_id=xpcs.ipynb` shows a static HTML preview (similar to
   nbviewer)
 * `/examples/fetch?example_id=xpcs.ipynb&dest=my-xpcs.ipynb` makes a "clean" copy of
