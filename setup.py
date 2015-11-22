@@ -41,7 +41,9 @@ def _install_js():
     install_nbextension(EXT_DIR, overwrite=True, user=True, verbose=2)
     cm = ConfigManager()
     print('Enabling extension for notebook')
-    cm.update('examples', {"load_extensions": {'static/main': True}})
+    cm.update("notebook", {"load_extensions":
+                           {"nbexamples/submit-example-button": True}})
+    cm.update("tree", {"load_extensions": {"nbexamples/main": True}})
 
 
 setup(
