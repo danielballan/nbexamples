@@ -22,12 +22,12 @@ including some example output.
 Clicking "use" opens a dialog box to prompt user for a filename or filepath
 (relative to their home dir).
 
-[!Fetch](docs/fetch-dialog.png)
+![Fetch](docs/fetch-dialog.png)
 
 On the notebook toolbar, a new "share as example" button (the "paper airplane"
 icon at right) submits the notebook to the list of "unreviewed" examples.
 
-[!Share as Example button](docs/share-button.png)
+![Share as Example button](docs/share-button.png)
 
 ### URL scheme
 

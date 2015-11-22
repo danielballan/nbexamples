@@ -7,7 +7,7 @@ define(function(require) {
         '<div id="examples" class="tab-pane">',
         '  <div id="examples_toolbar" class="row list_toolbar">',
         '    <div class="col-sm-8 no-padding">',
-        '      <span id="examples_list_info" class="toolbar_info">A shared collection of notebooks. To contribute a new notebook</span>',
+        '      <span id="examples_list_info" class="toolbar_info">A shared collection of notebooks. To contribute a new notebook to the list of "staged examples", open it and click the <span class="fa fa-send" style="margin: 3px;"></span> button.</span>',
         '    </div>',
         '    <div class="col-sm-4 no-padding tree-buttons">',
         '      <span id="examples_buttons" class="pull-right toolbar_buttons">',
