@@ -143,20 +143,24 @@ define([
 
     Example.prototype.make_row = function () {
         var row = $('<div/>').addClass('col-md-12');
-        row.append(this.make_link());
-        row.append($('<span/>').addClass('item_course col-sm-4').text(this.data.metadata.title));
-        row.append($('<a/>')
+        var display_title = this.data.metadata.title || this.data.filepath
+        row.append($('<span/>').addClass('item_name').text(display_title));
+        row.append($('<span/>')
+            .addClass('item_summary')
+            .text(this.data.metadata.summary));
+        var btns = $('<div/>').addClass('item-buttons pull-right');
+        btns.append($('<a/>')
             .attr("href", "examples/preview?example_id=" + this.data.filepath)
-            .addClass("btn btn-primary btn-xs")
+            .addClass("btn btn-info btn-xs")
             .attr("target", "_blank")
             .text('Preview'));
-        row.append(this.make_modal(this.data.filepath));
-        var modal_launcher = $('<button/>')
-            .addClass("btn btn-primary btn-xs")
+        btns.append($('<button/>')
+            .addClass("btn btn-success btn-xs")
             .attr("data-toggle", "modal")
             .attr("data-target", "#modal-" + this.hash(this.data.filepath))
-            .text('Use');
-        row.append(modal_launcher);
+            .text('Use'));
+        row.append(btns);
+        row.append(this.make_modal(this.data.filepath));
         this.element.empty().append(row);
 
         if (this.data.status === 'fetched') {
@@ -249,7 +253,7 @@ define([
             .attr("type", "button")
             .attr("data-dismiss", "modal")
             .text("Done")
-        submit_button = $('<input/>')
+        submit_button = $('<button/>')
             .addClass("btn")
             .addClass("btn-primary")
             .attr("type", "submit")

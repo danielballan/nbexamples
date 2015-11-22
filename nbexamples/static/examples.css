@@ -66,6 +66,11 @@
     text-align: right;
 }
 
+#examples .item_summary {
+    color: #bbb;
+    margin-left: 10px;
+}
+
 #examples .item_status .btn {
     min-width: 13ex;
 }
