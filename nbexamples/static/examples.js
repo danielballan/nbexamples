@@ -62,12 +62,9 @@ define([
             var element = $('<div/>');
             var item = new Example(element, data[i], $.proxy(this.load_list_success, this), this.options);
             this.reviewed_element.append(element);
-            if (data[i]['status'] === 'reviewed') {
+            if (data[i]['category'] === 'reviewed') {
                 this.reviewed_element.children('.list_placeholder').hide();
-            } else if (data[i]['status'] === 'fetched') {
-                this.fetched_element.append(element);
-                this.fetched_element.children('.list_placeholder').hide();
-            } else if (data[i]['status'] === 'unreviewed') {
+            } else if (data[i]['category'] === 'unreviewed') {
                 this.unreviewed_element.append(element);
                 this.unreviewed_element.children('.list_placeholder').hide();
             }
