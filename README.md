@@ -16,7 +16,7 @@ distribute a collection of curated examples or templates.
 
 ### URL scheme
 
-* `/examples` is the index page
+* `/tree#examples` is the index page
 * `/examples/preview?nb=xpcs.ipynb` shows a static HTML preview (similar to
   nbviewer)
 * `/examples/fetch?nb=xpcs.ipynb&dest=my-xpcs.ipynb` makes a "clean" copy of
@@ -46,8 +46,13 @@ Set the location of the example notebooks to be distributed by adding this
 line to the jupyter notebook config file:
 
 ```python
-c.Examples.example_dir = '/etc/examples'
+c.Examples.reviewed_example_dir = '/etc/reviewed_examples'
+c.Examples.unreviewed_example_dir = '/etc/unreviewed_examples`
 ```
+
+The intention is that `unreviewed_examples` is a globally-writable directory.
+Notebooks should be reviewed and promoted to `reviewed_examples` or
+eventually purged.
 
 ### Related Work
 
