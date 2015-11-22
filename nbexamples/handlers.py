@@ -1,6 +1,7 @@
 """Tornado handlers for nbexamples web service."""
 
 import os
+import shutil
 import sys
 import subprocess as sp
 import json
@@ -52,12 +53,17 @@ class Examples(LoggingConfigurable):
                       '--to', 'notebook', '--output', abs_dest],
                      stdout=sp.PIPE, stderr=sp.PIPE)
         output, err = p.communicate()
-        print(err)
         retcode = p.poll()
         if retcode != 0:
-            raise RuntimeError('jupyter nbconvert exited with code {}'.format(
-                               retcode))
+            raise RuntimeError('jupyter nbconvert exited with error {}'.format(
+                               err))
 
+    def submit_example(self, example_id):
+        # Make a copy of the example notebook.
+        dest = os.path.join(self.unreviewed_example_dir, example_id)
+        shutil.copyfile(example_id, dest)
+        return dest
+        
     def preview_example(self, example_id):
         fp = example_id
         if not os.path.isfile(fp):
@@ -99,6 +105,10 @@ class ExampleActionHandler(BaseExampleHandler):
             if not dest.endswith('.ipynb'):
                 dest += '.ipynb'
             self.redirect(ujoin(self.base_url, 'notebooks', dest))
+        elif action == 'submit':
+            dest = self.manager.submit_example(example_id)
+            preview_url = '/examples/preview?example_id={}'.format(dest)
+            self.redirect(ujoin(self.base_url, preview_url))
 
 
 #-----------------------------------------------------------------------------
@@ -106,7 +116,7 @@ class ExampleActionHandler(BaseExampleHandler):
 #-----------------------------------------------------------------------------
 
 
-_example_action_regex = r"(?P<action>fetch|preview)"
+_example_action_regex = r"(?P<action>fetch|preview|submit)"
 
 default_handlers = [
     (r"/examples", ExamplesHandler),
