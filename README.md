@@ -9,18 +9,24 @@ distribute a collection of curated examples or templates.
 * A new "examples" page lists notebooks from some configured directory, showing
   a title and description gleaned from notebook metadata. For each notebook
   there are two buttons, "preview" and "use".
+* Examples are sorted into "reviewed," curated examples and "unreviewed"
+  examples, a list to which anyone user can submit a notebookto share it
+  immediately with other users.
 * Clicking "preview" shows a static HTML version of the notebook, optionally
   including some example output.
 * Clicking "use" opens a dialog box to prompt user for a filename or filepath
   (relative to their home dir).
+* On the notebook toolbar, a new "share as example" button submits the notebook
+  to the list of "unreviewed" examples.
 
 ### URL scheme
 
 * `/tree#examples` is the index page
-* `/examples/preview?nb=xpcs.ipynb` shows a static HTML preview (similar to
+* `/examples/preview?example_id=xpcs.ipynb` shows a static HTML preview (similar to
   nbviewer)
-* `/examples/fetch?nb=xpcs.ipynb&dest=my-xpcs.ipynb` makes a "clean" copy of
+* `/examples/fetch?example_id=xpcs.ipynb&dest=my-xpcs.ipynb` makes a "clean" copy of
   the notebook in the user's home directory, stripping out the example output
+* `/examples/submit?example_id=my-new-example.ipynb` copies a notebook into a shared, globally-writable directory of "unreviewed" examples
 
 ### Requirements
 
