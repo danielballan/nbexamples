@@ -64,7 +64,7 @@ line to the jupyter notebook config file:
 
 ```python
 c.Examples.reviewed_example_dir = '/etc/reviewed_examples'
-c.Examples.unreviewed_example_dir = '/etc/unreviewed_examples`
+c.Examples.unreviewed_example_dir = '/etc/unreviewed_examples'
 ```
 
 The intention is that `unreviewed_examples` is a globally-writable directory.
