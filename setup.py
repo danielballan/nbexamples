@@ -53,5 +53,6 @@ setup(
     cmdclass={
         'install': InstallCommand,
         'develop': InstallCommand
-    }
+    },
+    include_package_data=True
 )
