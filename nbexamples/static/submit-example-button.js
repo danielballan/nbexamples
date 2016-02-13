@@ -14,7 +14,7 @@ define(['jquery', 'base/js/namespace', 'base/js/utils'], function ($, Jupyter, u
 
         if ($("#submit-example-button").length === 0) {
             Jupyter.toolbar.add_buttons_group([{
-              'label'   : 'Renumber cells',
+              'label'   : 'Share as Example',
               'icon'    : 'fa-send',
               'callback': submit_example,
               'id'      : 'submit-example-button'
@@ -27,7 +27,7 @@ define(['jquery', 'base/js/namespace', 'base/js/utils'], function ($, Jupyter, u
     };
 
     Jupyter.toolbar.add_buttons_group([{
-      'label'   : 'Renumber cells',
+      'label'   : 'Share as Example',
       'icon'    : 'fa-send',
       'callback': submit_example,
       'id'      : 'submit-example-button'
