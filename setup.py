@@ -38,7 +38,7 @@ def _install_server_extension():
 
 
 def _install_js():
-    install_nbextension(EXT_DIR, overwrite=True, user=True, verbose=2)
+    install_nbextension(EXT_DIR, overwrite=True, user=False, verbose=2)
     cm = ConfigManager()
     print('Enabling extension for notebook')
     cm.update("notebook", {"load_extensions":

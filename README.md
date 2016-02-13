@@ -27,6 +27,11 @@ Clicking "use" opens a dialog box to prompt user for a filename or filepath
 On the notebook toolbar, a new "share as example" button (the "paper airplane"
 icon at right) submits the notebook to the list of "unreviewed" examples.
 
+Optionally, you can add a custom title and summary (as shown in the example)
+by editing the notebook metadata (Edit > Edit Notebook Metadata) and adding
+"title" and "summary" to the JSON. If these are not present, nbexamples
+displays the notebook's filepath instead.
+
 ![Share as Example button](docs/share-button.png)
 
 ### URL scheme
