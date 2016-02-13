@@ -139,6 +139,11 @@ def load_jupyter_server_extension(nbapp):
             'nbexamples/main': True,
         }
     })
+    cfgm.update('notebook', {
+        'load_extensions': {
+            'nbexamples/submit-example-button': True,
+        }
+    })
 
     ExampleActionHandler.base_url = base_url  # used to redirect after fetch
     webapp.add_handlers(".*$", [
