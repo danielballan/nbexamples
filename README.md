@@ -27,12 +27,12 @@ Clicking "use" opens a dialog box to prompt user for a filename or filepath
 On the notebook toolbar, a new "share as example" button (the "paper airplane"
 icon at right) submits the notebook to the list of "unreviewed" examples.
 
+![Share as Example button](docs/share-button.png)
+
 Optionally, you can add a custom title and summary (as shown in the example)
 by editing the notebook metadata (Edit > Edit Notebook Metadata) and adding
 "title" and "summary" to the JSON. If these are not present, nbexamples
 displays the notebook's filepath instead.
-
-![Share as Example button](docs/share-button.png)
 
 ### URL scheme
 
@@ -68,8 +68,8 @@ Set the location of the example notebooks to be distributed by adding this
 line to the jupyter notebook config file:
 
 ```python
-c.Examples.reviewed_example_dir = '/etc/reviewed_examples'
-c.Examples.unreviewed_example_dir = '/etc/unreviewed_examples'
+c.Examples.reviewed_example_dir = '/opt/jupyter/examples/reviewed'
+c.Examples.unreviewed_example_dir = '/opt/jupyter/examples/unreviewed'
 ```
 
 The intention is that `unreviewed_examples` is a globally-writable directory.
