@@ -58,14 +58,15 @@ class Examples(LoggingConfigurable):
             raise RuntimeError('jupyter nbconvert exited with error {}'.format(
                                err))
 
-    def submit_example(self, example_id):
+    def submit_example(self, user_filepath):
         # Make a copy of the example notebook.
-        dest = os.path.join(self.unreviewed_example_dir, example_id)
-        shutil.copyfile(example_id, dest)
+        filename = os.path.basename(user_filepath)
+        dest = os.path.join(self.unreviewed_example_dir, filename)
+        shutil.copyfile(user_filepath, dest)
         return dest
         
-    def preview_example(self, example_id):
-        fp = example_id
+    def preview_example(self, filepath):
+        fp = filepath  # for brevity
         if not os.path.isfile(fp):
             raise web.HTTPError(404, "Example not found: %s" % example_id)
         p = sp.Popen(['jupyter', 'nbconvert', '--to', 'html', '--stdout', fp],
