@@ -146,6 +146,13 @@ define([
             .addClass('item_summary')
             .text(this.data.metadata.summary));
         var btns = $('<div/>').addClass('item-buttons pull-right');
+        if (this.data.owned & (this.data.category == 'unreviewed')) {
+            btns.append($('<a/>')
+                .attr("href", "examples/delete?example_id=" + this.data.filepath)
+                .addClass("btn btn-danger btn-xs")
+                .attr("target", "_blank")
+                .text('Delete'));
+        }
         btns.append($('<a/>')
             .attr("href", "examples/preview?example_id=" + this.data.filepath)
             .addClass("btn btn-info btn-xs")

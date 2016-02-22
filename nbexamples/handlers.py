@@ -33,6 +33,7 @@ class Examples(LoggingConfigurable):
         categories = ['reviewed', 'unreviewed']
         dirs = [self.reviewed_example_dir, self.unreviewed_example_dir]
         all_examples = []
+        uid = os.getuid()
         for category, d in zip(categories, dirs):
             filepaths = glob.glob(os.path.join(d, '*.ipynb'))
             examples = [{'filepath': os.path.abspath(fp)} for fp in filepaths]
@@ -40,6 +41,7 @@ class Examples(LoggingConfigurable):
                 node = nbformat.read(example['filepath'], nbformat.NO_CONVERT)
                 example['metadata'] = node.metadata
                 example['category'] = category
+                example['owned'] = os.stat(example['filepath']).st_uid == uid
             all_examples.extend(examples)
         return all_examples
 
@@ -77,6 +79,9 @@ class Examples(LoggingConfigurable):
             raise RuntimeError('nbconvert exited with code {}'.format(retcode))
         return output.decode()
 
+    def delete_example(self, filepath):
+        os.remove(filepath)
+
 
 class BaseExampleHandler(IPythonHandler):
 
@@ -110,6 +115,9 @@ class ExampleActionHandler(BaseExampleHandler):
             dest = self.manager.submit_example(example_id)
             preview_url = '/examples/preview?example_id={}'.format(dest)
             self.redirect(ujoin(self.base_url, preview_url))
+        elif action == 'delete':
+            self.manager.delete_example(example_id)
+            self.redirect(ujoin(self.base_url))
 
 
 #-----------------------------------------------------------------------------
@@ -117,7 +125,7 @@ class ExampleActionHandler(BaseExampleHandler):
 #-----------------------------------------------------------------------------
 
 
-_example_action_regex = r"(?P<action>fetch|preview|submit)"
+_example_action_regex = r"(?P<action>fetch|preview|submit|delete)"
 
 default_handlers = [
     (r"/examples", ExamplesHandler),
