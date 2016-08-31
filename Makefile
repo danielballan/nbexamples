@@ -4,7 +4,7 @@ SHELL:=/bin/bash
 # Steps to setup the extension in a conda dev environment
 define EXT_SETUP
 	pip install -e . && \
-	jupyter nbextension install --py nbexamples --sys-prefix && \
+	jupyter nbextension install --py nbexamples --sys-prefix --symlink --overwrite && \
 	jupyter nbextension enable nbexamples --py --sys-prefix && \
 	jupyter serverextension enable --py nbexamples --sys-prefix
 endef
