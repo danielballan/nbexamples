@@ -44,7 +44,7 @@ class Examples(LoggingConfigurable):
         return all_examples
 
     def fetch_example(self, example_id, dest):
-        abs_dest = os.path.join(os.path.expanduser('~'), dest)
+        abs_dest = os.path.join(self.parent.notebook_dir, dest)
         if not abs_dest.endswith('.ipynb'):
             abs_dest += '.ipynb'
         # Make a copy of the example notebook, stripping output.
