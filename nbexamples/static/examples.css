@@ -75,6 +75,10 @@
     min-width: 13ex;
 }
 
+.modal-dialog .modal-body .control-label {
+    padding-right: 1em;
+}
+
 #validation-message p {
     margin-bottom: 1em;
     padding-top: 1em;
