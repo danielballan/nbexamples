@@ -71,7 +71,7 @@ c.Examples.unreviewed_example_dir = '/opt/jupyter/examples/unreviewed'
 ```
 
 The intention is that `unreviewed_examples` is a globally-writable directory.
-Notebooks should be reviewed and promoted to a ready-only `reviewed_examples` or 
+Notebooks should be reviewed and promoted to a read-only `reviewed_examples` or 
 eventually purged.
 
 ### Development
