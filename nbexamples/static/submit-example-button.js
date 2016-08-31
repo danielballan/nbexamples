@@ -1,7 +1,11 @@
 define(['jquery', 'base/js/namespace', 'base/js/utils'], function ($, Jupyter, utils) {
 
     function submit_example () {
-        var url = utils.get_body_data("baseUrl") + '/examples/submit?example_id=' + Jupyter.notebook.notebook_path;
+        var url = utils.url_join_encode(
+            utils.get_body_data("baseUrl") +
+            '/examples/submit'
+        ) + '?example_id=' +
+            encodeURIComponent(Jupyter.notebook.notebook_path);
         var win = window.open(url, '_blank');
         win.focus();
     };
