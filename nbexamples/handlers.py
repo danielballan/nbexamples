@@ -60,9 +60,10 @@ class Examples(LoggingConfigurable):
 
     def submit_example(self, user_filepath):
         # Make a copy of the example notebook.
+        src = os.path.join(self.parent.notebook_dir, user_filepath)
         filename = os.path.basename(user_filepath)
         dest = os.path.join(self.unreviewed_example_dir, filename)
-        shutil.copyfile(user_filepath, dest)
+        shutil.copyfile(src, dest)
         return dest
 
     def preview_example(self, filepath):
