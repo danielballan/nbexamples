@@ -1,0 +1,10 @@
+name: nbexamples-dev
+channels:
+    - conda-forge
+    - defaults
+dependencies:
+    - python
+    - notebook >=4.2.0
+    - nbformat
+    - nbconvert
+

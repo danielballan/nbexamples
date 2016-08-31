@@ -34,6 +34,61 @@ by editing the notebook metadata (Edit > Edit Notebook Metadata) and adding
 "title" and "summary" to the JSON. If these are not present, nbexamples
 displays the notebook's filepath instead.
 
+### Requirements
+
+* notebook >=4.2
+* nbconvert
+* nbformat
+
+### Installation
+
+Assuming you want to install the extension into a conda environment, virtual 
+environment, or system-wide environment:
+
+```
+python setup.py install
+jupyter nbextension install --py nbexamples --sys-prefix
+jupyter nbextension enable --py nbexamples --sys-prefix
+jupyter serverextension enable --py nbexamples --sys-prefix
+```
+
+### Configuration
+
+Set the location of the example notebooks to be distributed on the command
+line when starting Jupyter Notebook:
+
+```bash
+jupyter notebook --Examples.reviewed_example_dir='/opt/jupyter/examples/reviewed' \
+                 --Examples.unreviewed_example_dir='/opt/jupyter/examples/unreviewed'
+```
+
+Alternatively, set these values in a `jupyter_notebook_config.py` file in one 
+of the config directories listed when you run `jupyter --paths`.
+
+```python
+c.Examples.reviewed_example_dir = '/opt/jupyter/examples/reviewed'
+c.Examples.unreviewed_example_dir = '/opt/jupyter/examples/unreviewed'
+```
+
+The intention is that `unreviewed_examples` is a globally-writable directory.
+Notebooks should be reviewed and promoted to a ready-only `reviewed_examples` or 
+eventually purged.
+
+### Development
+
+If you have conda installed, run the following to create and use an isolated
+dev environment.
+
+```bash
+make dev-env
+source activate nbexamples-dev
+make notebook
+```
+
+Any changes you make to the static assets (JS, CSS) are immediately available on
+browser refresh. Any changes you make to the Python require a notebook server 
+restart.
+
 ### URL scheme
 
 * `/tree#examples` is the Examples tab on the user's home page
@@ -43,38 +98,6 @@ displays the notebook's filepath instead.
 * `/examples/fetch?example_id=xpcs.ipynb&dest=my-xpcs.ipynb` makes a "clean" copy of
   the notebook in the user's home directory, stripping out the example output
 * `/examples/submit?example_id=my-new-example.ipynb` copies a notebook into a shared, globally-writable directory of "unreviewed" examples
-
-### Requirements
-
-* nbconvert
-* nbformat
-
-### Installation
-
-```
-python setup.py install
-```
-
-In addition to installing the `nbexamples` packages, the installation adds a
-server extension to the jupyter notebook config file:
-
-```python
-c.NotebookApp.server_extensions.append('nbexamples.handlers')
-```
-
-### Configuration
-
-Set the location of the example notebooks to be distributed by adding this
-line to the jupyter notebook config file:
-
-```python
-c.Examples.reviewed_example_dir = '/opt/jupyter/examples/reviewed'
-c.Examples.unreviewed_example_dir = '/opt/jupyter/examples/unreviewed'
-```
-
-The intention is that `unreviewed_examples` is a globally-writable directory.
-Notebooks should be reviewed and promoted to `reviewed_examples` or
-eventually purged.
 
 ### Related Work
 
