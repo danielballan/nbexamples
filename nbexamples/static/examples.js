@@ -28,6 +28,15 @@ define([
         $('#refresh_examples_list').click(function () {
             that.load_list();
         });
+
+        // Watch for any modal dialog submission and hide the dialog
+        // when it occurs. The data-dismiss attribute form of this
+        // behavior prevents the form submission.
+        [this.reviewed_element, this.unreviewed_element].forEach(function(element) {
+            element.on('submit', '.modal-dialog form', function(evt) {
+                $(evt.target).closest('.modal').modal('hide');
+            });
+        });
     };
 
 
