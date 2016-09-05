@@ -28,6 +28,15 @@ define([
         $('#refresh_examples_list').click(function () {
             that.load_list();
         });
+
+        // Watch for any modal dialog submission and hide the dialog
+        // when it occurs. The data-dismiss attribute form of this
+        // behavior prevents the form submission.
+        [this.reviewed_element, this.unreviewed_element].forEach(function(element) {
+            element.on('submit', '.modal-dialog form', function(evt) {
+                $(evt.target).closest('.modal').modal('hide');
+            });
+        });
     };
 
 
@@ -88,7 +97,7 @@ define([
                     // to do the animation (borderSpacing).
                     $icon.animate({ borderSpacing: 90 }, {
                         step: function(now,fx) {
-                            $icon.css('transform','rotate(-' + now + 'deg)'); 
+                            $icon.css('transform','rotate(-' + now + 'deg)');
                         }
                     }, 250);
                 } else {
@@ -96,7 +105,7 @@ define([
                     // See comment above.
                     $icon.animate({ borderSpacing: 0 }, {
                         step: function(now,fx) {
-                            $icon.css('transform','rotate(-' + now + 'deg)'); 
+                            $icon.css('transform','rotate(-' + now + 'deg)');
                         }
                     }, 250);
                 }
@@ -135,7 +144,7 @@ define([
     };
 
     Example.prototype.hash = function(s){
-        return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+        return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
     }
 
     Example.prototype.make_row = function () {
@@ -148,13 +157,18 @@ define([
         var btns = $('<div/>').addClass('item-buttons pull-right');
         if (this.data.owned & (this.data.category == 'unreviewed')) {
             btns.append($('<a/>')
-                .attr("href", "examples/delete?example_id=" + this.data.filepath)
+                .attr("href", utils.url_join_encode(this.base_url, "examples/delete") +
+                    "?example_id=" +
+                    encodeURIComponent(this.data.filepath))
                 .addClass("btn btn-danger btn-xs")
                 .attr("target", "_blank")
                 .text('Delete'));
         }
         btns.append($('<a/>')
-            .attr("href", "examples/preview?example_id=" + this.data.filepath)
+            .attr("href",
+                utils.url_join_encode(this.base_url, "examples/preview") +
+                "?example_id=" +
+                encodeURIComponent(this.data.filepath))
             .addClass("btn btn-info btn-xs")
             .attr("target", "_blank")
             .text('Preview'));
@@ -244,7 +258,7 @@ define([
         modal_title = $('<h4/>')
             .addClass("modal-title")
             .attr("id", "myModalLabel-" + this.hash(example_id))
-            .text("Fetch a fresh copy to your home directory")
+            .text("Fetch a fresh copy to your notebook directory")
         form = $('<form/>')
             .attr("action", "examples/fetch")
             .attr("method", "get")
@@ -256,7 +270,7 @@ define([
             .addClass("btn-default")
             .attr("type", "button")
             .attr("data-dismiss", "modal")
-            .text("Done")
+            .text("Cancel")
         submit_button = $('<button/>')
             .addClass("btn")
             .addClass("btn-primary")

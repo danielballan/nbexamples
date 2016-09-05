@@ -2,7 +2,6 @@
 
 import os
 import shutil
-import sys
 import subprocess as sp
 import json
 import glob
@@ -16,7 +15,6 @@ from notebook.nbextensions import install_nbextension
 from traitlets import Unicode
 from traitlets.config import LoggingConfigurable
 
-static = os.path.join(os.path.dirname(__file__), 'static')
 
 class Examples(LoggingConfigurable):
 
@@ -46,7 +44,7 @@ class Examples(LoggingConfigurable):
         return all_examples
 
     def fetch_example(self, example_id, dest):
-        abs_dest = os.path.join(os.path.expanduser('~'), dest)
+        abs_dest = os.path.join(self.parent.notebook_dir, dest)
         if not abs_dest.endswith('.ipynb'):
             abs_dest += '.ipynb'
         # Make a copy of the example notebook, stripping output.
@@ -62,15 +60,16 @@ class Examples(LoggingConfigurable):
 
     def submit_example(self, user_filepath):
         # Make a copy of the example notebook.
+        src = os.path.join(self.parent.notebook_dir, user_filepath)
         filename = os.path.basename(user_filepath)
         dest = os.path.join(self.unreviewed_example_dir, filename)
-        shutil.copyfile(user_filepath, dest)
+        shutil.copyfile(src, dest)
         return dest
-        
+
     def preview_example(self, filepath):
         fp = filepath  # for brevity
         if not os.path.isfile(fp):
-            raise web.HTTPError(404, "Example not found: %s" % example_id)
+            raise web.HTTPError(404, "Example not found: %s" % fp)
         p = sp.Popen(['jupyter', 'nbconvert', '--to', 'html', '--stdout', fp],
                      stdout=sp.PIPE, stderr=sp.PIPE)
         output, _ = p.communicate()
@@ -135,24 +134,9 @@ default_handlers = [
 
 def load_jupyter_server_extension(nbapp):
     """Load the nbserver"""
-    windows = sys.platform.startswith('win')
     webapp = nbapp.web_app
     webapp.settings['example_manager'] = Examples(parent=nbapp)
     base_url = webapp.settings['base_url']
-
-    install_nbextension(static, destination='nbexamples', symlink=not windows,
-                        user=True)
-    cfgm = nbapp.config_manager
-    cfgm.update('tree', {
-        'load_extensions': {
-            'nbexamples/main': True,
-        }
-    })
-    cfgm.update('notebook', {
-        'load_extensions': {
-            'nbexamples/submit-example-button': True,
-        }
-    })
 
     ExampleActionHandler.base_url = base_url  # used to redirect after fetch
     webapp.add_handlers(".*$", [
