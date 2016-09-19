@@ -1,3 +1,4 @@
 recursive-include nbexamples/static *
 include versioneer.py
 include nbexamples/_version.py
+include LICENSE
