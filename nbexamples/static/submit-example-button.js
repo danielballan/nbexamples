@@ -1,4 +1,5 @@
 define(['jquery', 'base/js/namespace', 'base/js/utils'], function ($, Jupyter, utils) {
+    "use strict";
 
     function submit_example () {
         var url = utils.url_join_encode(
@@ -9,8 +10,8 @@ define(['jquery', 'base/js/namespace', 'base/js/utils'], function ($, Jupyter, u
         var win = window.open(url, '_blank');
         win.focus();
     };
-    
-    function add_button () {
+
+    function add_button() {
         if (!Jupyter.toolbar) {
             $([Jupyter.events]).on("app_initialized.NotebookApp", add_button);
             return;
@@ -29,11 +30,4 @@ define(['jquery', 'base/js/namespace', 'base/js/utils'], function ($, Jupyter, u
     return {
         load_ipython_extension : add_button,
     };
-
-    Jupyter.toolbar.add_buttons_group([{
-      'label'   : 'Share as Example',
-      'icon'    : 'fa-send',
-      'callback': submit_example,
-      'id'      : 'submit-example-button'
-    }]);
 });

@@ -1,4 +1,6 @@
 define(function(require) {
+    "use strict";
+
     var $ = require('jquery');
     var Jupyter = require('base/js/namespace');
     var Examples = require('./examples');
