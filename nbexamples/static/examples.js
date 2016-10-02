@@ -63,9 +63,13 @@ define([
         [this.reviewed_element, this.unreviewed_element].forEach(function(element) {
             element.on('click', '[data-filepath]', function(evt) {
                 var filepath = $(evt.target).data('filepath');
+                var basename = $(evt.target).data('basename');
                 that.dialog_element
                     .find('[name="example_id"]')
                     .attr('value', filepath);
+                that.dialog_element
+                    .find('[name="dest"]')
+                    .attr('value', basename);
                 that.dialog_element.modal('show');
             });
         });
@@ -166,6 +170,7 @@ define([
         btns.append($('<button/>')
             .addClass("btn btn-success btn-xs")
             .attr('data-filepath', this.data.filepath)
+            .attr('data-basename', this.data.basename)
             .text('Use'));
         row.append(btns);
         this.element.empty().append(row);

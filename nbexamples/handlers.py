@@ -53,6 +53,7 @@ class Examples(LoggingConfigurable):
                 example['metadata'] = node.metadata
                 example['category'] = category
                 example['owned'] = os.stat(example['filepath']).st_uid == uid
+                example['basename'] = os.path.basename(example['filepath'])
             all_examples.extend(examples)
         return all_examples
 
