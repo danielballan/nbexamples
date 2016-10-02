@@ -11,13 +11,11 @@ from tornado import web
 import nbformat
 from notebook.utils import url_path_join as ujoin
 from notebook.base.handlers import IPythonHandler
-from notebook.nbextensions import install_nbextension
 from traitlets import Unicode
 from traitlets.config import LoggingConfigurable
 
 
 class Examples(LoggingConfigurable):
-
     reviewed_example_dir = Unicode('', config=True, help='Directory of reviewed notebooks, relative to NotebookApp.notebook_dir')
     unreviewed_example_dir = Unicode('', config=True, help='Directory of unreviewed notebooks, relative to NotebookApp.notebook_dir')
 
@@ -112,16 +110,15 @@ class ExampleActionHandler(BaseExampleHandler):
             self.redirect(ujoin(self.base_url, 'notebooks', dest))
         elif action == 'submit':
             dest = self.manager.submit_example(example_id)
-            preview_url = '/examples/preview?example_id={}'.format(dest)
-            self.redirect(ujoin(self.base_url, preview_url))
+            self.redirect(ujoin(self.base_url, 'tree#examples' + dest))
         elif action == 'delete':
             self.manager.delete_example(example_id)
             self.redirect(ujoin(self.base_url))
 
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # URL to handler mappings
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 _example_action_regex = r"(?P<action>fetch|preview|submit|delete)"
