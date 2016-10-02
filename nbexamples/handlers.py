@@ -7,6 +7,7 @@ import json
 import glob
 import itertools
 import errno
+import pwd
 
 from tornado import web
 
@@ -50,10 +51,19 @@ class Examples(LoggingConfigurable):
             examples = [{'filepath': os.path.abspath(fp)} for fp in filepaths]
             for example in examples:
                 node = nbformat.read(example['filepath'], nbformat.NO_CONVERT)
+                st = os.stat(example['filepath'])
+                try:
+                    user = pwd.getpwuid(st.st_uid)
+                except KeyError:
+                    example['user'] = None
+                else:
+                    example['user'] = user.pw_gecos or user.pw_name
+                example['datetime'] = st.st_mtime
+                example['filename'] = os.path.basename(example['filepath'])
                 example['metadata'] = node.metadata
                 example['category'] = category
-                example['owned'] = os.stat(example['filepath']).st_uid == uid
                 example['basename'] = os.path.basename(example['filepath'])
+                example['owned'] = st.st_uid == uid
             all_examples.extend(examples)
         return all_examples
 

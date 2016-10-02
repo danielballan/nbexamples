@@ -68,6 +68,10 @@
 
 #examples .item_summary {
     color: #bbb;
+}
+
+#examples .item_attribution {
+    color: #bbb;
     margin-left: 10px;
 }
 
