@@ -46,7 +46,7 @@ define(function(require) {
         '</div>',
     ].join('\n'));
 
-   function load() {
+    function load() {
         if (!Jupyter.notebook_list) return;
         var base_url = Jupyter.notebook_list.base_url;
         $('head').append(
@@ -69,19 +69,27 @@ define(function(require) {
                 })
             )
         );
+
+        // Parse the hash value
+        var is_examples = (window.location.hash.indexOf('#examples') === 0);
+        var active_example_id;
+        if(is_examples) {
+            active_example_id = window.location.hash.substr('#examples'.length);
+        }
+
         var examples = new Examples.Examples(
             '#reviewed_examples_list',
             '#unreviewed_examples_list',
             {
                 base_url: Jupyter.notebook_list.base_url,
                 notebook_path: Jupyter.notebook_list.notebook_path,
+                active_example_id: active_example_id
             }
         );
         examples.load_list();
 
-        if(window.location.hash === '#examples') {
-            console.log('activating examples');
-            $('#examples_tab').click();
+        if(is_examples) {
+            $('#examples_tab').tab('show');
         }
     }
     return {

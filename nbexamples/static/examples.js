@@ -91,6 +91,14 @@ define([
 
     Example.prototype.style = function () {
         this.element.addClass('list_item').addClass("row");
+
+        // If this example is active, highlight it
+        if(this.options.active_example_id === this.data.filepath) {
+            this.element.addClass('bg-info');
+            // Clear the active pointer so that it doesn't highlight again when
+            // the user refreshes the list
+            this.options.active_example_id = null;
+        }
     };
 
     Example.prototype.hash = function(s){
