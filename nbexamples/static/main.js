@@ -60,6 +60,7 @@ define(function(require) {
             $('<li>')
             .append(
                 $('<a>')
+                .attr('id', 'examples_tab')
                 .attr('href', '#examples')
                 .attr('data-toggle', 'tab')
                 .text('Examples')
@@ -77,6 +78,11 @@ define(function(require) {
             }
         );
         examples.load_list();
+
+        if(window.location.hash === '#examples') {
+            console.log('activating examples');
+            $('#examples_tab').click();
+        }
     }
     return {
         load_ipython_extension: load
