@@ -120,7 +120,7 @@ define([
                 "?example_id=" +
                 encodeURIComponent(this.data.filepath))
             .addClass("btn btn-info btn-xs")
-            .attr("target", "_blank")
+            .attr("target", Jupyter._target)
             .text('Preview'));
         btns.append($('<button/>')
             .addClass("btn btn-success btn-xs")
@@ -169,7 +169,7 @@ define([
         form = $('<form/>')
             .attr("action", "examples/fetch")
             .attr("method", "get")
-            .attr("target", "_blank")
+            .attr("target", Jupyter._target)
         modal_body = $('<div/>')
             .addClass("modal-body")
         cancel_button = $('<button/>')
