@@ -6,6 +6,7 @@ import subprocess as sp
 import json
 import glob
 import itertools
+import errno
 
 from tornado import web
 
@@ -80,7 +81,15 @@ class Examples(LoggingConfigurable):
         src = os.path.join(self.parent.notebook_dir, user_filepath)
         filename = os.path.basename(user_filepath)
         dest = os.path.join(self.unreviewed_example_dir, filename)
-        shutil.copyfile(src, dest)
+        try:
+            shutil.copyfile(src, dest)
+        except OSError as ex:
+            # python 2/3 compatibility permission error check
+            if ex.errno == errno.EACCES:
+                if os.path.exists(dest):
+                    raise web.HTTPError(401, 'Another user already shared a notebook with the name {}'.format(filename))
+                else:
+                    raise web.HTTPError(401, 'Could not write to the examples directory')
         return dest
 
     def preview_example(self, filepath):
