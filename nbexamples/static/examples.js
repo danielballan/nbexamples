@@ -111,7 +111,7 @@ define([
                     "?example_id=" +
                     encodeURIComponent(this.data.filepath))
                 .addClass("btn btn-danger btn-xs")
-                .attr("target", "_blank")
+                .attr("target", "_self")
                 .text('Delete'));
         }
         btns.append($('<a/>')
