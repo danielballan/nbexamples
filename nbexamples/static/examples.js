@@ -9,12 +9,36 @@ define([
 ], function(Jupyter, $, utils, dialog) {
     "use strict";
 
+    var dialog_html = [
+        '<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="nbexamples-modal-label">',
+        ' <div class="modal-dialog" role="document">',
+        '  <div class="modal-content">',
+        '   <div class="modal-header">',
+        '    <h4 id="nbexamples-modal-label" class="modal-title">Fetch a fresh copy to your notebook directory</h4>',
+        '   </div>',
+        '   <form action="examples/fetch" method="get" target="' + Jupyter._target + '">',
+        '    <div class="modal-body">',
+        '     <label class="control-label" for="nbexamples-clone-name">Save Copy As</label>',
+        '     <input type="text" name="dest" id="nbexamples-clone-name" />',
+        '     <input type="hidden" name="example_id" />',
+        '    </div>',
+        '    <div class="modal-footer">',
+        '     <button class="btn btn-default" type="button" data-dismiss="modal">Cancel</button>',
+        '     <button class="btn btn-primary" type="submit">Fetch a Copy</button>',
+        '    </div>',
+        '   </form>',
+        '  </div>',
+        ' </div>',
+        '</div>'
+    ].join('\n');
+
     var Examples = function (reviewed_selector, unreviewed_selector, options) {
         this.reviewed_selector = reviewed_selector;
         this.unreviewed_selector = unreviewed_selector;
 
         this.reviewed_element = $(reviewed_selector);
         this.unreviewed_element = $(unreviewed_selector);
+        this.dialog_element = $(dialog_html).appendTo('body');
         this.bind_events();
 
         options = options || {};
@@ -28,12 +52,21 @@ define([
             that.load_list();
         });
 
-        // Watch for any modal dialog submission and hide the dialog
-        // when it occurs. The data-dismiss attribute form of this
-        // behavior prevents the form submission.
+        // Hide the modal dialog on submit. The declarative attribute does
+        // not work when form submission is involved.
+        this.dialog_element.on('submit', '.modal-dialog form', function(evt) {
+            $(evt.target).closest('.modal').modal('hide');
+        });
+
+        // Show the singleton dialog when the user clicks the use button for any
+        // example. Set the example ID in the hidden element field.
         [this.reviewed_element, this.unreviewed_element].forEach(function(element) {
-            element.on('submit', '.modal-dialog form', function(evt) {
-                $(evt.target).closest('.modal').modal('hide');
+            element.on('click', '[data-filepath]', function(evt) {
+                var filepath = $(evt.target).data('filepath');
+                that.dialog_element
+                    .find('[name="example_id"]')
+                    .attr('value', filepath);
+                that.dialog_element.modal('show');
             });
         });
     };
@@ -132,97 +165,10 @@ define([
             .text('Preview'));
         btns.append($('<button/>')
             .addClass("btn btn-success btn-xs")
-            .attr("data-toggle", "modal")
-            .attr("data-target", "#modal-" + this.hash(this.data.filepath))
+            .attr('data-filepath', this.data.filepath)
             .text('Use'));
         row.append(btns);
-        row.append(this.make_modal(this.data.filepath));
         this.element.empty().append(row);
-    };
-
-    Example.prototype.make_modal = function(example_id) {
-        var that = this;
-        var modal_dialog;
-        var modal_content;
-        var modal_header;
-        var modal_title;
-        var form;
-        var modal_body;
-        var modal_footer;
-        var dest_label;
-        var dest_form_group;
-        var dest_input;
-        var hidden_input;
-        var submit_button;
-        var cancel_button;
-        var dumb = $('<div/>');
-        var container = $('<div/>')
-            .addClass("modal")
-            .addClass("fade")
-            .attr("id", "modal-" + this.hash(example_id))
-            .attr("tabindex", "-1")
-            .attr("role", "dialog")
-            .attr("aria-labelledby", "myModalLabel-" + this.hash(example_id));
-        modal_dialog = $('<div/>')
-            .addClass("modal-dialog")
-            .attr("role", "document")
-        modal_content = $('<div/>')
-            .addClass("modal-content")
-        modal_header = $('<div/>')
-            .addClass("modal-header")
-        modal_title = $('<h4/>')
-            .addClass("modal-title")
-            .attr("id", "myModalLabel-" + this.hash(example_id))
-            .text("Fetch a fresh copy to your notebook directory")
-        form = $('<form/>')
-            .attr("action", "examples/fetch")
-            .attr("method", "get")
-            .attr("target", Jupyter._target)
-        modal_body = $('<div/>')
-            .addClass("modal-body")
-        cancel_button = $('<button/>')
-            .addClass("btn")
-            .addClass("btn-default")
-            .attr("type", "button")
-            .attr("data-dismiss", "modal")
-            .text("Cancel")
-        submit_button = $('<button/>')
-            .addClass("btn")
-            .addClass("btn-primary")
-            .attr("type", "submit")
-            .text("Fetch a Copy")
-        modal_footer = $('<div/>')
-            .addClass("modal-footer")
-        dest_form_group = $('<div/>')
-            .addClass("form-group")
-        dest_label = $('<label/>')
-            .addClass("control-label")
-            .attr("for", "dest-" + this.hash(example_id))
-            .text("Save Copy As")
-        dest_input = $('<input/>')
-            .attr("type", "text")
-            .attr("name", "dest")
-            .attr("id", "dest-" + this.hash(example_id))
-        hidden_input = $('<input/>')
-            .attr("type", "hidden")
-            .attr("name", "example_id")
-            .attr("value", example_id)
-        modal_body.append(dest_label);
-        modal_body.append(dest_input);
-        modal_body.append(hidden_input);
-        modal_footer.append(cancel_button);
-        modal_footer.append(submit_button);
-        form.append(modal_body);
-        form.append(modal_footer);
-        modal_header.append(modal_title);
-        modal_content.append(modal_header);
-        modal_content.append(form);
-        modal_content.append(modal_header);
-        modal_content.append(form);  // form contains body and footer
-        modal_dialog.append(modal_content);
-        container.append(modal_dialog);
-
-        return container;
     };
 
     return {
