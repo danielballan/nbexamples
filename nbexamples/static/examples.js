@@ -4,9 +4,10 @@
 define([
     'base/js/namespace',
     'jquery',
+    'underscore',
     'base/js/utils',
     'base/js/dialog',
-], function(Jupyter, $, utils, dialog) {
+], function(Jupyter, $, underscore, utils, dialog) {
     "use strict";
 
     var dialog_html = [
@@ -142,13 +143,22 @@ define([
         return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
     }
 
+    var attribution_tmpl = _.template('by <%= user %>, <%= datetime %>');
     Example.prototype.make_row = function () {
+        this.element.empty();
+
+        // First row: title, author, date, buttons
         var row = $('<div/>').addClass('col-md-12');
-        var display_title = this.data.metadata.title || this.data.filepath
+
+        var display_title = this.data.metadata.title || this.data.filename
         row.append($('<span/>').addClass('item_name').text(display_title));
-        row.append($('<span/>')
-            .addClass('item_summary')
-            .text(this.data.metadata.summary));
+
+        var attribution = attribution_tmpl({
+            datetime: (new Date(this.data.datetime * 1000)).toLocaleString(),
+            user: this.data.user
+        });
+        row.append($('<span/>').addClass('item_attribution').text(attribution));
+
         var btns = $('<div/>').addClass('item-buttons pull-right');
         if (this.data.owned & (this.data.category == 'unreviewed')) {
             btns.append($('<a/>')
@@ -173,7 +183,16 @@ define([
             .attr('data-basename', this.data.basename)
             .text('Use'));
         row.append(btns);
-        this.element.empty().append(row);
+        this.element.append(row);
+
+        // Second row: summary, if it exists
+        if(this.data.metadata.summary) {
+            row = $('<div/>').addClass('col-md-12');
+            row.append($('<span/>')
+                .addClass('item_summary')
+                .text(this.data.metadata.summary));
+            this.element.append(row);
+        }
     };
 
     return {
