@@ -5,6 +5,8 @@ import shutil
 import subprocess as sp
 import json
 import glob
+import itertools
+import errno
 
 from tornado import web
 
@@ -25,6 +27,19 @@ class Examples(LoggingConfigurable):
     def _unreviewed_example_dir_default(self):
         return self.parent.notebook_dir
 
+    def make_unique_filename(self, abs_fn, insert='-Clone'):
+        path, filename = os.path.split(abs_fn)
+        basename, ext = os.path.splitext(filename)
+        for i in itertools.count():
+            insert_i = '{}{}'.format(insert, i)
+            name = '{basename}{suffix}{ext}'.format(basename=basename,
+                                                    suffix=insert_i,
+                                                    ext=ext)
+            new_abs_fn = os.path.join(path, name)
+            if not os.path.exists(new_abs_fn):
+                break
+        return new_abs_fn
+
     def list_examples(self):
         categories = ['reviewed', 'unreviewed']
         dirs = [self.reviewed_example_dir, self.unreviewed_example_dir]
@@ -38,6 +53,7 @@ class Examples(LoggingConfigurable):
                 example['metadata'] = node.metadata
                 example['category'] = category
                 example['owned'] = os.stat(example['filepath']).st_uid == uid
+                example['basename'] = os.path.basename(example['filepath'])
             all_examples.extend(examples)
         return all_examples
 
@@ -45,6 +61,9 @@ class Examples(LoggingConfigurable):
         abs_dest = os.path.join(self.parent.notebook_dir, dest)
         if not abs_dest.endswith('.ipynb'):
             abs_dest += '.ipynb'
+        # Give the target a unique suffix to avoid overwriting anything
+        if os.path.exists(abs_dest):
+            abs_dest = self.make_unique_filename(abs_dest)
         # Make a copy of the example notebook, stripping output.
         p = sp.Popen(['jupyter', 'nbconvert', example_id,
                       '--Exporter.preprocessors=["nbexamples.strip_output.StripOutput"]',
@@ -55,13 +74,23 @@ class Examples(LoggingConfigurable):
         if retcode != 0:
             raise RuntimeError('jupyter nbconvert exited with error {}'.format(
                                err))
+        # Return the possibly suffixed filename
+        return os.path.split(abs_dest)[1]
 
     def submit_example(self, user_filepath):
-        # Make a copy of the example notebook.
+        # Make a copy of the example notebook
         src = os.path.join(self.parent.notebook_dir, user_filepath)
         filename = os.path.basename(user_filepath)
         dest = os.path.join(self.unreviewed_example_dir, filename)
-        shutil.copyfile(src, dest)
+        try:
+            shutil.copyfile(src, dest)
+        except OSError as ex:
+            # python 2/3 compatibility permission error check
+            if ex.errno == errno.EACCES:
+                if os.path.exists(dest):
+                    raise web.HTTPError(401, 'Another user already shared a notebook with the name {}'.format(filename))
+                else:
+                    raise web.HTTPError(401, 'Could not write to the examples directory')
         return dest
 
     def preview_example(self, filepath):
@@ -103,10 +132,7 @@ class ExampleActionHandler(BaseExampleHandler):
             self.finish(self.manager.preview_example(example_id))
         elif action == 'fetch':
             dest = self.get_argument('dest')
-            self.manager.fetch_example(example_id, dest)
-            # nbconvert appends '.ipynb' if it isn't present
-            if not dest.endswith('.ipynb'):
-                dest += '.ipynb'
+            dest = self.manager.fetch_example(example_id, dest)
             self.redirect(ujoin(self.base_url, 'notebooks', dest))
         elif action == 'submit':
             dest = self.manager.submit_example(example_id)
