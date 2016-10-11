@@ -7,7 +7,7 @@ define([
     'underscore',
     'base/js/utils',
     'base/js/dialog',
-], function(Jupyter, $, underscore, utils, dialog) {
+], function(Jupyter, $, _, utils, dialog) {
     "use strict";
 
     var dialog_tmpl = _.template([
