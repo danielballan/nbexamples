@@ -10,14 +10,14 @@ define([
 ], function(Jupyter, $, underscore, utils, dialog) {
     "use strict";
 
-    var dialog_html = [
+    var dialog_tmpl = _.template([
         '<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="nbexamples-modal-label">',
         ' <div class="modal-dialog" role="document">',
         '  <div class="modal-content">',
         '   <div class="modal-header">',
         '    <h4 id="nbexamples-modal-label" class="modal-title">Fetch a fresh copy to your notebook directory</h4>',
         '   </div>',
-        '   <form action="examples/fetch" method="get" target="' + Jupyter._target + '">',
+        '   <form action="<%= base_url %>examples/fetch" method="get" target="' + Jupyter._target + '">',
         '    <div class="modal-body">',
         '     <label class="control-label" for="nbexamples-clone-name">Save Copy As</label>',
         '     <input type="text" name="dest" id="nbexamples-clone-name" />',
@@ -31,21 +31,22 @@ define([
         '  </div>',
         ' </div>',
         '</div>'
-    ].join('\n');
+    ].join('\n'));
 
     var Examples = function (reviewed_selector, unreviewed_selector, options) {
         this.reviewed_selector = reviewed_selector;
         this.unreviewed_selector = unreviewed_selector;
 
-        this.reviewed_element = $(reviewed_selector);
-        this.unreviewed_element = $(unreviewed_selector);
-        this.dialog_element = $(dialog_html).appendTo('body');
-        this.bind_events();
-
         options = options || {};
         this.options = options;
         this.base_url = options.base_url || utils.get_body_data("baseUrl");
-    };
+
+        this.reviewed_element = $(reviewed_selector);
+        this.unreviewed_element = $(unreviewed_selector);
+        var dialog_html = dialog_tmpl({base_url: this.base_url});
+        this.dialog_element = $(dialog_html).appendTo('body');
+        this.bind_events();
+   };
 
     Examples.prototype.bind_events = function () {
         var that = this;
