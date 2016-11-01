@@ -103,6 +103,9 @@ define([
     Examples.prototype.load_list_success = function (data, status, xhr) {
         this.clear_list();
         var len = data.length;
+        data = _.sortBy(data, function(example) {
+            return example.metadata.title || example.basename;
+        });
         for (var i=0; i<len; i++) {
             var element = $('<div/>');
             var item = new Example(element,
