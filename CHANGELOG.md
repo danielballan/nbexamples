@@ -2,7 +2,7 @@
 
 ## v0.3.1
 
-* [#26](https://github.com/danielballan/nbexamples/pull/26) Added sort order to the notebooks in the Exampels tab: title (if set) else filename
+* [#26](https://github.com/danielballan/nbexamples/pull/26) Added sort order to the notebooks in the Examples tab: title (if set) else filename
 * [#25](https://github.com/danielballan/nbexamples/pull/25) Fixed cloning when user has navigated to a subfolder
 
 ## v0.3.0
